@@ -129,3 +129,40 @@ src/
 
 * Authentication context (`AuthContext.jsx`) manages login/logout state
 * User is stored in `localStorage` and retrieved across page reloads
+
+---
+
+## 🚀 How to Run the Project
+
+### 📦 Prerequisites
+
+Make sure you have the following installed:
+
+* *Node.js* (v18+ recommended)
+* *npm*
+
+### 🛠 Steps to Run
+
+1. *Clone the repository*
+
+   bash
+   git clone https://github.com/RonakPonkiya/Apple.git
+   cd Apple
+   
+
+2. *Install dependencies*
+
+   bash
+   npm install
+   
+
+
+3. *Start the development server*
+
+   bash
+   npm run dev
+   
+
+4. *Open in browser*
+
+   Navigate to [http://localhost:5173](http://localhost:5173) in your browser.
