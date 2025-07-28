@@ -1,96 +1,87 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Eye, EyeOff } from "lucide-react";
 
-function LoginForm() {
-  const [form, setForm] = useState({ username: "", password: "" });
-  const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  const { login } = useAuth();
+const LoginForm = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-    setError("");
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const username = form.username.trim();
-    const password = form.password.trim();
-
-    if (!username || !password) {
-      setError("Username and password are required");
-      return;
-    }
-
-    const success = login(username, password);
-
-    if (!success) {
-      setError("Invalid username or password");
+  const onSubmit = (data) => {
+    const sucess = login(data.username,data.password);
+    if (!sucess) {
+      alert("Invalid username or password");
     } else {
-      setError("");
       navigate("/products");
     }
   };
-
   return (
     <div className="max-w-md mx-auto mt-16 p-8 bg-white shadow-md rounded-xl border border-gray-100">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Login to Your Account</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Login to Your Account
+      </h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="username">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Username
           </label>
           <input
-            id="username"
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            placeholder="Enter your username"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            required
+            type="text"
+            {...register("username", {
+              required: "username is required",
+              minLength: { value: 2, message: "username is too short" },
+            })}
+            placeholder="username"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
           />
+          {errors.username && (
+            <p className="text-red-500 text-sm">{errors.username.message}</p>
+          )}
         </div>
 
-        <div className="relative">
-          <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Password
           </label>
           <input
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            value={form.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 pr-10"
-            required
+            type="password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters",
+              },
+            })}
+            placeholder="Password"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 pr-10"
           />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-9 text-gray-500"
-            tabIndex={-1}
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
         </div>
-
-        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition"
+          className="w-full bg-green-600 text-white py-2 rounded"
         >
           Login
         </button>
+        <div>
+          <p>
+            Not Have an Account?{" "}
+            <Link to="/signup">
+              <span className="text-blue-800">Signup</span>
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );
-}
+};
 
 export default LoginForm;
